@@ -53,7 +53,9 @@ private:
 	Memory* mem;
 
 	void executeOp(uInt op);
-	void executeAluOp(uInt op);
+	void executeRegOp(uInt op);
+	void executeImmOp(uInt op);
+	void executeJmpOp(uInt op);
 };
 
 
