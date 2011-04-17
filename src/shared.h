@@ -9,6 +9,12 @@ using namespace std;
 #include <string>
 #include <malloc.h>
 
+#ifdef DEBUG
+#define DEBUGLEVEL 1
+#else
+#define DEBUGLEVEL 0
+#endif
+
 #define FREE(ptr) { if ((ptr) != NULL){ free(((void*)ptr)); (ptr) = NULL; } }
 #define UNUSED __attribute__ ((unused))
 #define ALIGNED(sz) __attribute__ ((__aligned__(sz)))

@@ -12,9 +12,10 @@ void cmd_exe(char const line[512], Cpu& cpu);
 
 int main(int argc, char** argv){
 	Cpu& cpu = *Cpu::create_cpu();
+	bool end = false;
 	char line[512];
 
-	while (!cin.eof() && cin.getline(line, 512)){
+	while (!end && !cin.eof() && cin.getline(line, 512)){
 		switch (line[0]){
 			case 'r':
 				cmd_reg(line, *cpu.getMips());
@@ -27,6 +28,9 @@ int main(int argc, char** argv){
 				break;
 			case '.':
 				cmd_exe(line, cpu);
+				break;
+			case 'q':
+				end = true;
 				break;
 			default:
 				COMMAND_UNKNOWN();
