@@ -3,6 +3,8 @@
 
 using namespace std;
 
+#include <cstdlib>
+#include <cstdint>
 #include <iostream>
 #include <string>
 #include <malloc.h>
@@ -13,11 +15,21 @@ using namespace std;
 #define ALIGNED(sz) __attribute__ ((__aligned__(sz)))
 
 typedef void* PPAGE ALIGNED(4096);
+typedef int32_t sInt;
+typedef uint32_t uInt;
+typedef int64_t sLong;
+typedef uint64_t uLong;
 
 
 UNUSED static inline const void fatalError(string msg){
 	cerr << msg;
 	exit(EXIT_FAILURE);
+};
+
+
+UNUSED static inline const void warn(string msg){
+	cerr << msg;
+	return;
 };
 
 
