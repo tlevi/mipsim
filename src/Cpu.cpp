@@ -9,9 +9,9 @@
 
 #define ROP_FUNC(op) (op & 0x3f)
 #define ROP_SHAM(op) ((op >> 6) & 0x1f)
-#define ROP_DST_REG(op) ((op >> 11) & 0x1f)
-#define ROP_ADD_REG(op) ((op >> 16) & 0x1f)
-#define ROP_SRC_REG(op) ((op >> 21) & 0x1f)
+#define OP_DST_REG(op) ((op >> 11) & 0x1f)
+#define OP_ADD_REG(op) ((op >> 16) & 0x1f)
+#define OP_SRC_REG(op) ((op >> 21) & 0x1f)
 
 
 Cpu* Cpu::create_cpu(){
@@ -62,28 +62,20 @@ void Cpu::executeOp(uInt op){
 
 void Cpu::executeRegOp(uInt op){
 #ifdef DEBUG
-	printf("R-op, func:%x, r%d, r%d, r%d\n", ROP_FUNC(op), ROP_DST_REG(op), ROP_SRC_REG(op), ROP_ADD_REG(op));
+	printf("R-op, func:%x, r%d, r%d, r%d\n", ROP_FUNC(op), OP_DST_REG(op), OP_SRC_REG(op), OP_ADD_REG(op));
 #endif
 
 	uInt* const regs = mips->r;
-	uInt* const dst = &regs[ROP_DST_REG(op)];
-	uInt* const add = &regs[ROP_ADD_REG(op)];
-	uInt* const src = &regs[ROP_SRC_REG(op)];
-	uInt bit;
+	uInt* const dst = &regs[OP_DST_REG(op)];
+	uInt* const add = &regs[OP_ADD_REG(op)];
+	uInt* const src = &regs[OP_SRC_REG(op)];
 
 	switch (ROP_FUNC(op)){
 		case OPFUNC_SLL:
-			*add = *src << ROP_SHAM(op);
+			*dst = *add << ROP_SHAM(op);
 			break;
 		case OPFUNC_SRL:
-			*add = *src >> ROP_SHAM(op);
-			break;
-		case OPFUNC_SRA:
-			//TODO actually test this madness
-			bit = *src >> 31;
-			for (int i=0; i < ROP_SHAM(op); ++i)
-				bit = (bit << 1) | (bit & 1);
-			*add = (*src >> ROP_SHAM(op)) | bit;
+			*dst = *add >> ROP_SHAM(op);
 			break;
 		case OPFUNC_JR:
 			mips->pc = *src - 4;
