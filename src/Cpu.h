@@ -51,6 +51,9 @@ public:
 private:
 	mips_t* mips;
 	Memory* mem;
+
+	void executeOp(uInt op);
+	void executeAluOp(uInt op);
 };
 
 
