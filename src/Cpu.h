@@ -1,8 +1,10 @@
-#include "shared.h"
+#ifndef CPU_H_
+#define CPU_H_
+
+#include "Memory.h"
 
 
 #define EXTRA_REGS 2
-
 
 class mips_t {
 public:
@@ -34,13 +36,22 @@ public:
 
 
 class Cpu{
-private:
-	static mips_t* mips;
-
 public:
-	static void execute(const int count);
+	void execute(const int count);
 
-	static void setMips(mips_t& mips) { Cpu::mips = &mips; };
-	static const mips_t* const getMips() { return Cpu::mips; };
+	void init(mips_t& mips, Memory& mem) { this->mips = &mips; this->mem = &mem; };
+	mips_t* getMips() const { return this->mips; };
+	Memory* getMem() const{ return this->mem; };
+
+	Cpu() : mips(NULL), mem(NULL) {};
+
+	static Cpu* create_cpu();
+	static void delete_cpu(Cpu* cpu);
+
+private:
+	mips_t* mips;
+	Memory* mem;
 };
 
+
+#endif /* CPU_H_ */

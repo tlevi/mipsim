@@ -1,4 +1,3 @@
-#include "shared.h"
 #include "Cpu.h"
 
 
@@ -7,30 +6,33 @@
 
 void cmd_reg(char const line[512], mips_t& mips);
 void cmd_pc(char const line[512], mips_t& mips);
+void cmd_mem(char const line[512], Memory& mem);
+void cmd_exe(char const line[512], Cpu& cpu);
 
 
 int main(int argc, char** argv){
+	Cpu& cpu = *Cpu::create_cpu();
 	char line[512];
-
-	mips_t mips;
-	mips.init();
-	Cpu::setMips(mips);
 
 	while (!cin.eof() && cin.getline(line, 512)){
 		switch (line[0]){
 			case 'r':
-				cmd_reg(line, mips);
+				cmd_reg(line, *cpu.getMips());
 				break;
 			case 'p':
-				cmd_pc(line, mips);
+				cmd_pc(line, *cpu.getMips());
 				break;
 			case 'm':
+				cmd_mem(line, *cpu.getMem());
+				break;
 			case '.':
+				cmd_exe(line, cpu);
 			default:
 				COMMAND_UNKNOWN();
 		};
 	}
 
+	Cpu::delete_cpu(&cpu);
 	return EXIT_SUCCESS;
 };
 
@@ -73,5 +75,28 @@ void cmd_pc(char const line[512], mips_t& mips){
 
 	if (result == 1) mips.pc = val;
 	else printf("%X\n", mips.pc);
+};
+
+
+void cmd_mem(char const line[512], Memory& mem){
+	uInt val = 0;
+	uInt addr = 0;
+	const int result = sscanf(line, "m %8x = %8x", &addr, &val);
+
+	if (result == EOF || result < 1){
+		COMMAND_SYNTAX();
+		return;
+	}
+
+	addr &= 0xfffffff0;
+
+	if (result == 2) mem.set(addr, val);
+	else printf("%X\n", mem.get(addr));
+};
+
+
+void cmd_exe(char const line[512], Cpu& cpu){
+	COMMAND_SYNTAX();
+	return;
 };
 
