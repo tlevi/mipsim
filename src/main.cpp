@@ -60,7 +60,7 @@ void cmd_reg(char const line[512], mips_t& mips){
 		mips.r[reg] = val;
 		mips.r[0] = 0; // r0 is always zero
 	}
-	else printf("%X\n", mips.r[reg]);
+	else printf("%.8X\n", mips.r[reg]);
 };
 
 
@@ -79,7 +79,7 @@ void cmd_pc(char const line[512], mips_t& mips){
 	}
 
 	if (result == 1) mips.pc = val;
-	else printf("%X\n", mips.pc);
+	else printf("%.8X\n", mips.pc);
 };
 
 
@@ -96,7 +96,7 @@ void cmd_mem(char const line[512], Memory& mem){
 	addr &= 0xfffffff0;
 
 	if (result == 2) mem.set(addr, val);
-	else printf("%X\n", mem.get(addr));
+	else printf("%.8X\n", mem.get(addr));
 };
 
 
