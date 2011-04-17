@@ -85,6 +85,9 @@ void Cpu::executeRegOp(uInt op){
 		case OPFUNC_ADDU:
 			*dst = *src + *add;
 			break;
+		case OPFUNC_AND:
+			*dst = *src & *add;
+			break;
 		default:
 			fatalError("Unknown function for R-format instruction (opcode 0)");
 	}
