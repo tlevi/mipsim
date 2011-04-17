@@ -10,9 +10,11 @@ using namespace std;
 #include <malloc.h>
 
 #define FREE(ptr) { if ((ptr) != NULL){ free(((void*)ptr)); (ptr) = NULL; } }
-#define PAGE_SIZE 4096
 #define UNUSED __attribute__ ((unused))
 #define ALIGNED(sz) __attribute__ ((__aligned__(sz)))
+#define PAGE_SIZE 4096
+#define PAGE_MASK (~(PAGE_SIZE-1))
+#define PAGE_BITS (PAGE_SIZE-1)
 
 typedef void* PPAGE ALIGNED(4096);
 typedef int32_t sInt;
