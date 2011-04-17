@@ -1,8 +1,8 @@
 #include "Cpu.h"
 
-
-#define COMMAND_UNKNOWN() (cerr << "Unknown command specified, ignoring\n")
+#define COMMAND_UNKNOWN() (warn("Unknown command specified, ignoring\n"))
 #define COMMAND_SYNTAX() (warn("Incorrect syntax in command, ignoring\n"))
+
 
 void cmd_reg(char const line[512], mips_t& mips);
 void cmd_pc(char const line[512], mips_t& mips);
@@ -102,9 +102,8 @@ void cmd_mem(char const line[512], Memory& mem){
 
 void cmd_exe(char const line[512], Cpu& cpu){
 	uLong count = 1;
-	const int result = sscanf(line, ". %lu", &count);
 
-	if (result == EOF && sscanf(line, ".") != 0){
+	if (sscanf(line, ". %lu", &count) == EOF && sscanf(line, ".") == EOF){
 		COMMAND_SYNTAX();
 		return;
 	}
