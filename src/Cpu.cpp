@@ -6,6 +6,8 @@
 #define OPCODE_SHIFT 26
 
 #define GET_OPCODE(op) ((op >> OPCODE_SHIFT) & 0xfa)
+#define GET_IMM(op)	(op & 0xffff)
+#define GET_IMMSGN(op) (sign_extend(GET_IMM(op)))
 
 #define ROP_FUNC(op) (op & 0x3f)
 #define ROP_SHAM(op) ((op >> 6) & 0x1f)
@@ -95,13 +97,51 @@ void Cpu::executeRegOp(uInt op){
 
 
 void Cpu::executeImmOp(uInt op){
+	uInt* const regs = mips->r;
+	uInt* const add = &regs[OP_ADD_REG(op)];
+	uInt* const src = &regs[OP_SRC_REG(op)];
+	uInt pmem;
+
 #ifdef DEBUG
-	printf("I-op\n");
+	printf("I-op, op:%x, r%d, r%d, imm:%x\n", GET_OPCODE(op), src, add, imm);
 #endif
 
-	const uInt opcode = GET_OPCODE(op);
-
-	switch (opcode){
+	switch (GET_OPCODE(op)){
+		case OPCODE_BEQ:
+			mips->pc += (*src == *add) ? GET_IMM(op)*4 : 0;
+			break;
+		case OPCODE_BNE:
+			mips->pc += (*src != *add) ? GET_IMM(op)*4 : 0;
+			break;
+		case OPCODE_ADDI:
+			//TODO throw overflow exception
+		case OPCODE_ADDIU:
+			*add = *src + GET_IMMSGN(op);
+			break;
+		case OPCODE_SLTI:
+			*add = (long(*src) < long(GET_IMMSGN(op))) ? 1 : 0;
+			break;
+		case OPCODE_SLTIU:
+			*add = (*src < GET_IMMSGN(op)) ? 1 : 0;
+			break;
+		case OPCODE_ANDI:
+			*add = *src & GET_IMM(op);
+			break;
+/* TODO
+#define OPCODE_ORI     0x0D
+#define OPCODE_LUI     0x0F
+#define OPCODE_LB      0x20
+#define OPCODE_LH      0x21
+#define OPCODE_LW      0x22
+#define OPCODE_LD      0x23
+#define OPCODE_LBU     0x24
+#define OPCODE LHU     0x25
+#define OPCODE_SB      0x28
+#define OPCODE_SH      0x29*/
+		case OPCODE_SW:
+			pmem = *src + GET_IMMSGN(op);
+			mem->set(pmem, *add);
+			break;
 		default:
 			fatalError("Unknown function for I-format instruction");
 	}

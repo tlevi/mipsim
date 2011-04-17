@@ -14,6 +14,7 @@
 #define OPCODE_ADDI    0x08
 #define OPCODE_ADDIU   0x09
 #define OPCODE_SLTI    0x0A
+#define OPCODE_SLTIU   0x0B
 #define OPCODE_ANDI    0x0C
 #define OPCODE_ORI     0x0D
 #define OPCODE_LUI     0x0F
