@@ -27,6 +27,7 @@ int main(int argc, char** argv){
 				break;
 			case '.':
 				cmd_exe(line, cpu);
+				break;
 			default:
 				COMMAND_UNKNOWN();
 		};
@@ -96,7 +97,14 @@ void cmd_mem(char const line[512], Memory& mem){
 
 
 void cmd_exe(char const line[512], Cpu& cpu){
-	COMMAND_SYNTAX();
-	return;
+	uLong count = 1;
+	const int result = sscanf(line, ". %lu", &count);
+
+	if (result == EOF && sscanf(line, ".") != 0){
+		COMMAND_SYNTAX();
+		return;
+	}
+
+	cpu.execute(count);
 };
 

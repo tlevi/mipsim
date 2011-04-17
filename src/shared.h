@@ -24,13 +24,13 @@ typedef uint64_t uLong;
 
 
 UNUSED static inline const void fatalError(string msg){
-	cerr << msg;
+	cerr << "Fatal error: " << msg;
 	exit(EXIT_FAILURE);
 };
 
 
 UNUSED static inline const void warn(string msg){
-	cerr << msg;
+	cerr << "Warning: " << msg;
 	return;
 };
 

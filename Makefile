@@ -10,7 +10,7 @@ OBJ := $(patsubst %.cpp, %.o, $(SRC))
 
 all: 
 debug: CFLAGS :=$(patsubst -s,-g3,$(CFLAGS))
-debug: CFLAGS += -Werror
+debug: CFLAGS += -Werror -DDEBUG
 
 %.o: %.cpp Makefile
 	g++ $(CFLAGS) -c $*.cpp -o $*.o
