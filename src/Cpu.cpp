@@ -72,7 +72,7 @@ void Cpu::executeAluOp(uInt op){
 
 	switch (ROP_FUNC){
 		case FUNC_SLL:
-			*dst = *src << *add;
+			*add = *src << ROP_SHAM;
 			break;
 
 		case FUNC_ADD:
