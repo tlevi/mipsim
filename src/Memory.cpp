@@ -1,38 +1,29 @@
 #include "Memory.h"
 
 
-uInt Memory::get(uInt addr){
-	const uInt page_addr = addr & PAGE_MASK;
-	const uInt page_bits = addr & PAGE_BITS;
-	uInt* const page = pages[page_addr];
-
-	return (page != NULL) ? page[page_bits] : 0;
-};
-
-
 void Memory::set(uInt addr, uInt val){
 	const uInt page_addr = addr & PAGE_MASK;
 	const uInt page_bits = addr & PAGE_BITS;
 
-	uInt* page = pages[page_addr];
+	void* page = pages[page_addr];
 	if (page == NULL) page = create_page(page_addr);
-	page[page_bits] = val;
+	static_cast<uInt*>(page)[page_bits] = val;
 };
 
 
-uInt* Memory::create_page(uInt page_addr){
-	const int max = PAGE_SIZE/sizeof(uInt);
+void* Memory::create_page(uInt page_addr){
+	// create the page
+	void* page = arealloc<void*>(PAGE_SIZE, PAGE_SIZE, NULL, 0);
 
-	// create the page and blank it
-	uInt* page = new uInt[max];
-	for (int i=0; i < max; ++i) page[i] = 0;
+	// initialise to zero
+	memset(page, 0, 4096);
 
-	pages[page_addr] = page;
-	return page;
+	// Add it to table and return pointer
+	return pages[page_addr] = page;
 };
 
 
 Memory::~Memory(){
-	for (pair<uInt,uInt*> elm : pages)
-		delete elm.second;
+	for (pair<uInt,void*> elm : pages)
+		FREE(elm.second);
 };

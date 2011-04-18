@@ -41,7 +41,7 @@ void Cpu::execute(const int count){
 	for (int i=0; i < count; ++i){
 		if (DEBUGLEVEL && mips->pc % 4 != 0)
 			fatalError("PC not aligned to 4!\n");
-		uInt op = mem->get(mips->pc);
+		uInt op = mem->get<uInt>(mips->pc);
 		executeOp(op);
 		mips->r[0] = 0;
 		mips->pc += 4;
@@ -150,16 +150,10 @@ void Cpu::executeImmOp(uInt op){
 		case OPCODE_ORI:
 			*add = *src | GET_IMM(op);
 			break;
-/* TODO
-#define OPCODE_LUI     0x0F
-#define OPCODE_LB      0x20
-#define OPCODE_LH      0x21
-#define OPCODE_LW      0x22
-#define OPCODE_LD      0x23
-#define OPCODE_LBU     0x24
-#define OPCODE LHU     0x25
-#define OPCODE_SB      0x28
-#define OPCODE_SH      0x29*/
+		case OPCODE_LW:
+			pmem = *src + GET_IMMSGN(op);
+			*add = mem->get<uInt>(pmem);
+			break;
 		case OPCODE_SW:
 			pmem = *src + GET_IMMSGN(op);
 			mem->set(pmem, *add);
@@ -167,6 +161,16 @@ void Cpu::executeImmOp(uInt op){
 		default:
 			fatalError("Unknown function for I-format instruction");
 	}
+	/* TODO
+	#define OPCODE_LUI     0x0F
+	#define OPCODE_LB      0x20
+	#define OPCODE_LH      0x21
+	#define OPCODE_LW      0x22
+	#define OPCODE_LD      0x23
+	#define OPCODE_LBU     0x24
+	#define OPCODE LHU     0x25
+	#define OPCODE_SB      0x28
+	#define OPCODE_SH      0x29*/
 };
 
 

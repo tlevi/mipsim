@@ -7,14 +7,43 @@
 
 class Memory{
 public:
-	uInt get(uInt addr);
+
+	template <class T>
+	T get(uInt addr);
 	void set(uInt addr, uInt val);
+
+	template <class T>
+	T* getPtr(uInt addr);
 
 	~Memory();
 private:
-	map<uInt,uInt*> pages;
+	map<uInt,void*> pages;
 
-	uInt* create_page(uInt addr);
+	void* create_page(uInt addr);
+};
+
+
+template <class T>
+T Memory::get(uInt addr){
+	const uInt page_addr = addr & PAGE_MASK;
+	const uInt page_bits = addr & PAGE_BITS;
+
+	void* const page = pages[page_addr];
+	T* pval = static_cast<T*>(page) + page_bits;
+
+	return (page != NULL) ? *pval : 0;
+};
+
+
+template <class T>
+T* Memory::getPtr(uInt addr){
+	const uInt page_addr = addr & PAGE_MASK;
+	const uInt page_bits = addr & PAGE_BITS;
+
+	void* page = pages[page_addr];
+	if (page == NULL) page = create_page(page_addr);
+
+	return static_cast<T*>(page) + page_bits;
 };
 
 

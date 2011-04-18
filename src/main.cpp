@@ -96,7 +96,7 @@ void cmd_mem(char const line[512], Memory& mem){
 	addr &= 0xfffffff0;
 
 	if (result == 2) mem.set(addr, val);
-	else printf("%.8X\n", mem.get(addr));
+	else printf("%.8X\n", mem.get<uInt>(addr));
 };
 
 
