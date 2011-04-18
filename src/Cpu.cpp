@@ -196,15 +196,14 @@ void Cpu::executeJmpOp(uInt op){
 	printf("J-op\n");
 #endif
 
-	const uInt opcode = GET_OPCODE(op);
-
-	switch (opcode){
+	switch (GET_OPCODE(op)){
 		case OPCODE_J:
-			//TODO OPCODE_J
 		case OPCODE_JAL:
-			//TODO OPCODE_JAL
+			fatalError("Unimplemented J-op\n");
+			break;
 		default:
 			fatalError("Unknown function for J-format instruction\n");
+			break;
 	}
 };
 
