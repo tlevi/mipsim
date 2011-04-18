@@ -20,8 +20,6 @@
 #define OPCODE_ANDI    0x0C
 #define OPCODE_ORI     0x0D
 #define OPCODE_LUI     0x0F
-#define OPCODE_LB      0x20
-#define OPCODE_LH      0x21
 #define OPCODE_LW      0x22
 #define OPCODE_LD      0x23
 #define OPCODE_LBU     0x24
@@ -30,7 +28,8 @@
 #define OPCODE_SH      0x29
 #define OPCODE_LL      0x30
 #define OPCODE_SW      0x2B
-#define OPCODE_IMAX    0x2B
+#define OPCODE_SC      0x38
+#define OPCODE_IMAX    0x38
 
 #define OPFUNC_MIN     0x00
 #define OPFUNC_SLL     0x00
