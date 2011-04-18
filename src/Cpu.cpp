@@ -7,7 +7,8 @@
 
 #define GET_OPCODE(op) ((op >> OPCODE_SHIFT) & 0xfa)
 #define GET_IMM(op)	(op & 0xffff)
-#define GET_IMMSGN(op) (uInt(sInt(sShort(op & 0xffff))))
+#define GET_IMMSGNEXT(op) (uInt(sInt(sShort(op & 0xffff))))
+#define GET_IMMSGN(op) (sShort(op & 0xffff))
 
 #define ROP_FUNC(op) (op & 0x3f)
 #define ROP_SHAM(op) ((op >> 6) & 0x1f)
@@ -138,10 +139,10 @@ void Cpu::executeImmOp(uInt op){
 			*add = *src + GET_IMMSGN(op);
 			break;
 		case OPCODE_SLTI:
-			*add = (sInt(*src) < sInt(GET_IMMSGN(op))) ? 1 : 0;
+			*add = (sInt(*src) < GET_IMMSGN(op)) ? 1 : 0;
 			break;
 		case OPCODE_SLTIU:
-			*add = (*src < uInt(GET_IMMSGN(op))) ? 1 : 0;
+			*add = (*src < GET_IMMSGN(op)) ? 1 : 0;
 			break;
 		case OPCODE_ANDI:
 			*add = *src & GET_IMM(op);
