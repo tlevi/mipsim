@@ -39,7 +39,7 @@ void Cpu::delete_cpu(Cpu * cpu){
 
 void Cpu::execute(const int count){
 	for (int i=0; i < count; ++i){
-		if (DEBUGLEVEL && mips->pc % 4 != 0)
+		if (mips->pc & 0xf) // checks pc % 4 == 0
 			fatalError("PC not aligned to 4!\n");
 		uInt op = mem->get<uInt>(mips->pc);
 		executeOp(op);
@@ -86,32 +86,41 @@ void Cpu::executeRegOp(uInt op){
 		case OPFUNC_JR:
 			mips->pc = *src - 4;
 			break;
+		case OPFUNC_MFHI:
+		case OPFUNC_MFLO:
+		case OPFUNC_MULT:
+		case OPFUNC_DIV:
+		case OPFUNC_DIVU:
+			fatalError("Unimplemented R-op");
+			break;
 		case OPFUNC_ADD:
 			//TODO throw overflow exception
 		case OPFUNC_ADDU:
 			*dst = *src + *add;
 			break;
+		case OPFUNC_SUB:
+			//TODO throw some exception
+		case OPFUNC_SUBU:
+			*dst = *src - *add;
+			break;
 		case OPFUNC_AND:
 			*dst = *src & *add;
 			break;
-/* TODO
-#define OPFUNC_SRA     0x03
-#define OPFUNC_JR      0x08
-#define OPFUNC_MFHI    0x10
-#define OPFUNC_MFLO    0x12
-#define OPFUNC_MULT    0x18
-#define OPFUNC_DIV     0x1A
-#define OPFUNC_DIVU    0x1B
-#define OPFUNC_ADD     0x20
-#define OPFUNC_ADDU    0x21
-#define OPFUNC_SUB     0x22
-#define OPFUNC_SUBU    0x23
-#define OPFUNC_AND     0x24
-#define OPFUNC_OR      0x25
-#define OPFUNC_NOR     0x27
-#define OPFUNC_SLT     0x2A */
+		case OPFUNC_OR:
+			*dst = *src | *add;
+			break;
+		case OPFUNC_NOR:
+			*dst = ~(*src | *add);
+			break;
+		case OPFUNC_SLT:
+			*dst = (sInt(*src) < sInt(*add)) ? 1 : 0;
+			break;
+		case OPFUNC_SLTU:
+			*dst = (*src < *add) ? 1 : 0;
+			break;
 		default:
 			fatalError("Unknown function for R-format instruction (opcode 0)");
+			break;
 	}
 };
 
@@ -150,9 +159,20 @@ void Cpu::executeImmOp(uInt op){
 		case OPCODE_ORI:
 			*add = *src | GET_IMM(op);
 			break;
+		case OPCODE_LUI:
+		case OPCODE_LB:
+		case OPCODE_LH:
+			fatalError("Unimplemented I-op");
+			break;
 		case OPCODE_LW:
 			pmem = *src + GET_IMMSGN(op);
 			*add = mem->get<uInt>(pmem);
+			break;
+		case OPCODE_LD:
+		case OPCODE_LBU:
+		case OPCODE_LHU:
+		case OPCODE_SB:
+			fatalError("Unimplemented I-op");
 			break;
 		case OPCODE_SW:
 			pmem = *src + GET_IMMSGN(op);
@@ -160,17 +180,8 @@ void Cpu::executeImmOp(uInt op){
 			break;
 		default:
 			fatalError("Unknown function for I-format instruction");
+			break;
 	}
-	/* TODO
-	#define OPCODE_LUI     0x0F
-	#define OPCODE_LB      0x20
-	#define OPCODE_LH      0x21
-	#define OPCODE_LW      0x22
-	#define OPCODE_LD      0x23
-	#define OPCODE_LBU     0x24
-	#define OPCODE LHU     0x25
-	#define OPCODE_SB      0x28
-	#define OPCODE_SH      0x29*/
 };
 
 

@@ -23,7 +23,7 @@
 #define OPCODE_LW      0x22
 #define OPCODE_LD      0x23
 #define OPCODE_LBU     0x24
-#define OPCODE LHU     0x25
+#define OPCODE_LHU     0x25
 #define OPCODE_SB      0x28
 #define OPCODE_SH      0x29
 #define OPCODE_SW      0x2B
@@ -47,6 +47,7 @@
 #define OPFUNC_OR      0x25
 #define OPFUNC_NOR     0x27
 #define OPFUNC_SLT     0x2A
-#define OPFUNC_MAX     0x2A
+#define OPFUNC_SLTU    0x2B
+#define OPFUNC_MAX     0x2B
 
 #endif /* OPCODES_H_ */
