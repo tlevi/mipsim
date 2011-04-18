@@ -7,7 +7,7 @@
 
 #define GET_OPCODE(op) ((op >> OPCODE_SHIFT) & 0xfa)
 #define GET_IMM(op)	(op & 0xffff)
-#define GET_IMMSGN(op) (sign_extend(GET_IMM(op)))
+#define GET_IMMSGN(op) (uInt(sInt(sShort(op & 0xffff))))
 
 #define ROP_FUNC(op) (op & 0x3f)
 #define ROP_SHAM(op) ((op >> 6) & 0x1f)
@@ -79,6 +79,9 @@ void Cpu::executeRegOp(uInt op){
 		case OPFUNC_SRL:
 			*dst = *add >> ROP_SHAM(op);
 			break;
+		case OPFUNC_SRA:
+			*dst = uInt(sInt(*add) >> ROP_SHAM(op));
+			break;
 		case OPFUNC_JR:
 			mips->pc = *src - 4;
 			break;
@@ -90,6 +93,22 @@ void Cpu::executeRegOp(uInt op){
 		case OPFUNC_AND:
 			*dst = *src & *add;
 			break;
+/* TODO
+#define OPFUNC_SRA     0x03
+#define OPFUNC_JR      0x08
+#define OPFUNC_MFHI    0x10
+#define OPFUNC_MFLO    0x12
+#define OPFUNC_MULT    0x18
+#define OPFUNC_DIV     0x1A
+#define OPFUNC_DIVU    0x1B
+#define OPFUNC_ADD     0x20
+#define OPFUNC_ADDU    0x21
+#define OPFUNC_SUB     0x22
+#define OPFUNC_SUBU    0x23
+#define OPFUNC_AND     0x24
+#define OPFUNC_OR      0x25
+#define OPFUNC_NOR     0x27
+#define OPFUNC_SLT     0x2A */
 		default:
 			fatalError("Unknown function for R-format instruction (opcode 0)");
 	}
@@ -119,16 +138,18 @@ void Cpu::executeImmOp(uInt op){
 			*add = *src + GET_IMMSGN(op);
 			break;
 		case OPCODE_SLTI:
-			*add = (long(*src) < long(GET_IMMSGN(op))) ? 1 : 0;
+			*add = (sInt(*src) < sInt(GET_IMMSGN(op))) ? 1 : 0;
 			break;
 		case OPCODE_SLTIU:
-			*add = (*src < GET_IMMSGN(op)) ? 1 : 0;
+			*add = (*src < uInt(GET_IMMSGN(op))) ? 1 : 0;
 			break;
 		case OPCODE_ANDI:
 			*add = *src & GET_IMM(op);
 			break;
+		case OPCODE_ORI:
+			*add = *src | GET_IMM(op);
+			break;
 /* TODO
-#define OPCODE_ORI     0x0D
 #define OPCODE_LUI     0x0F
 #define OPCODE_LB      0x20
 #define OPCODE_LH      0x21
