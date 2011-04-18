@@ -8,6 +8,7 @@ using namespace std;
 #include <iostream>
 #include <string>
 #include <malloc.h>
+#include <cstring>
 
 #ifdef DEBUG
 #define DEBUGLEVEL 1
