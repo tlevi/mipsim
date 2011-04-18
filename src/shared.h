@@ -26,6 +26,8 @@ using namespace std;
 typedef void* PPAGE ALIGNED(4096);
 typedef int32_t sInt;
 typedef uint32_t uInt;
+typedef int8_t sChar;
+typedef uint8_t uChar;
 typedef int64_t sLong;
 typedef uint64_t uLong;
 typedef int16_t sShort;

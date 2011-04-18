@@ -28,6 +28,7 @@
 #define OPCODE_LHU     0x25
 #define OPCODE_SB      0x28
 #define OPCODE_SH      0x29
+#define OPCODE_LL      0x30
 #define OPCODE_SW      0x2B
 #define OPCODE_IMAX    0x2B
 

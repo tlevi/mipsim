@@ -177,7 +177,16 @@ void Cpu::executeImmOp(uInt op){
 		case OPCODE_LD:
 		case OPCODE_LBU:
 		case OPCODE_LHU:
+			fatalError("Unimplemented I-op\n");
+			break;
 		case OPCODE_SB:
+			pmem = *src + GET_IMMSGN(op);
+			mem->set(pmem, uChar(*add));
+		case OPCODE_SH:
+			pmem = *src + GET_IMMSGN(op);
+			mem->set(pmem, uShort(*add));
+			break;
+		case OPCODE_LL:
 			fatalError("Unimplemented I-op\n");
 			break;
 		case OPCODE_SW:
