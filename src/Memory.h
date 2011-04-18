@@ -10,10 +10,12 @@ public:
 
 	template <class T>
 	T get(uInt addr);
-	void set(uInt addr, uInt val);
 
 	template <class T>
-	T* getPtr(uInt addr);
+	void set(uInt addr, T val);
+
+	template <class T>
+	T* getp(uInt addr);
 
 	~Memory();
 private:
@@ -36,7 +38,7 @@ T Memory::get(uInt addr){
 
 
 template <class T>
-T* Memory::getPtr(uInt addr){
+T* Memory::getp(uInt addr){
 	const uInt page_addr = addr & PAGE_MASK;
 	const uInt page_bits = addr & PAGE_BITS;
 
@@ -44,6 +46,12 @@ T* Memory::getPtr(uInt addr){
 	if (page == NULL) page = create_page(page_addr);
 
 	return static_cast<T*>(page) + page_bits;
+};
+
+
+template <class T>
+void Memory::set(uInt addr, T val){
+	*getp<T>(addr) = val;
 };
 
 
