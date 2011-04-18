@@ -52,17 +52,4 @@ UNUSED static inline T arealloc(size_t sz, size_t align, T src, size_t cpsz){
 };
 
 
-UNUSED static inline uInt sign_extend(uShort s){
-	const uInt sgn = (s >> 15) & 1;
-
-	uInt val = s;
-	if (sgn == 0) return val;
-
-	for (int i=16; i < 32; ++i)
-		val |= sgn << i;
-
-	return val;
-};
-
-
 #endif /* SHARED_H_ */
