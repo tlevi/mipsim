@@ -13,6 +13,8 @@
 #define OPCODE_BNE     0x05
 #define OPCODE_ADDI    0x08
 #define OPCODE_ADDIU   0x09
+#define OPCODE_MFC     0x10
+#define OPCODE_FP      0x11
 #define OPCODE_SLTI    0x0A
 #define OPCODE_SLTIU   0x0B
 #define OPCODE_ANDI    0x0C

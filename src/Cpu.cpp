@@ -91,7 +91,7 @@ void Cpu::executeRegOp(uInt op){
 		case OPFUNC_MULT:
 		case OPFUNC_DIV:
 		case OPFUNC_DIVU:
-			fatalError("Unimplemented R-op");
+			fatalError("Unimplemented R-op\n");
 			break;
 		case OPFUNC_ADD:
 			//TODO throw overflow exception
@@ -119,7 +119,7 @@ void Cpu::executeRegOp(uInt op){
 			*dst = (*src < *add) ? 1 : 0;
 			break;
 		default:
-			fatalError("Unknown function for R-format instruction (opcode 0)");
+			fatalError("Unknown function for R-format instruction (opcode 0)\n");
 			break;
 	}
 };
@@ -137,15 +137,21 @@ void Cpu::executeImmOp(uInt op){
 
 	switch (GET_OPCODE(op)){
 		case OPCODE_BEQ:
-			mips->pc += (*src == *add) ? GET_IMM(op)*4 : 0;
+			mips->pc += (*src == *add) ? GET_IMMSGN(op)*4 : 0;
 			break;
 		case OPCODE_BNE:
-			mips->pc += (*src != *add) ? GET_IMM(op)*4 : 0;
+			mips->pc += (*src != *add) ? GET_IMMSGN(op)*4 : 0;
 			break;
 		case OPCODE_ADDI:
 			//TODO throw overflow exception
 		case OPCODE_ADDIU:
 			*add = *src + GET_IMMSGN(op);
+			break;
+		case OPCODE_MFC:
+			fatalError("Unimplemented I-op\n");
+			break;
+		case OPCODE_FP:
+			fatalError("In executeImmOp, but found FP-op!\n");
 			break;
 		case OPCODE_SLTI:
 			*add = (sInt(*src) < GET_IMMSGN(op)) ? 1 : 0;
@@ -162,7 +168,7 @@ void Cpu::executeImmOp(uInt op){
 		case OPCODE_LUI:
 		case OPCODE_LB:
 		case OPCODE_LH:
-			fatalError("Unimplemented I-op");
+			fatalError("Unimplemented I-op\n");
 			break;
 		case OPCODE_LW:
 			pmem = *src + GET_IMMSGN(op);
@@ -172,14 +178,14 @@ void Cpu::executeImmOp(uInt op){
 		case OPCODE_LBU:
 		case OPCODE_LHU:
 		case OPCODE_SB:
-			fatalError("Unimplemented I-op");
+			fatalError("Unimplemented I-op\n");
 			break;
 		case OPCODE_SW:
 			pmem = *src + GET_IMMSGN(op);
 			mem->set(pmem, *add);
 			break;
 		default:
-			fatalError("Unknown function for I-format instruction");
+			fatalError("Unknown function for I-format instruction\n");
 			break;
 	}
 };
@@ -198,7 +204,7 @@ void Cpu::executeJmpOp(uInt op){
 		case OPCODE_JAL:
 			//TODO OPCODE_JAL
 		default:
-			fatalError("Unknown function for J-format instruction");
+			fatalError("Unknown function for J-format instruction\n");
 	}
 };
 
