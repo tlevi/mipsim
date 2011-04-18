@@ -103,7 +103,7 @@ void Cpu::executeImmOp(uInt op){
 	uInt pmem;
 
 #ifdef DEBUG
-	printf("I-op, op:%x, r%d, r%d, imm:%x\n", GET_OPCODE(op), src, add, imm);
+	printf("I-op, op:%x, r%d, r%d, imm:%x\n", GET_OPCODE(op), OP_SRC_REG(op), OP_ADD_REG(op), GET_IMM(op));
 #endif
 
 	switch (GET_OPCODE(op)){
