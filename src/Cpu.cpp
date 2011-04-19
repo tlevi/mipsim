@@ -39,7 +39,7 @@ void Cpu::delete_cpu(Cpu * cpu){
 
 void Cpu::execute(const int count){
 	for (int i=0; i < count; ++i){
-		if (mips->pc & 0xf) // checks pc % 4 == 0
+		if (mips->pc & 0x3) // checks pc % 4 == 0
 			fatalError("PC not aligned to 4!\n");
 		uInt op = mem->get<uInt>(mips->pc);
 		executeOp(op);
@@ -64,7 +64,7 @@ void Cpu::executeOp(uInt op){
 
 
 void Cpu::executeRegOp(uInt op){
-#ifdef DEBUG
+#if DEBUGLEVEL > 2
 	printf("R-op, func:%x, r%d, r%d, r%d\n", ROP_FUNC(op), OP_DST_REG(op), OP_SRC_REG(op), OP_ADD_REG(op));
 #endif
 
@@ -126,14 +126,14 @@ void Cpu::executeRegOp(uInt op){
 
 
 void Cpu::executeImmOp(uInt op){
+#if DEBUGLEVEL > 2
+	printf("I-op, op:%x, r%d, r%d, imm:%x\n", GET_OPCODE(op), OP_SRC_REG(op), OP_ADD_REG(op), GET_IMM(op));
+#endif
+
 	uInt* const regs = mips->r;
 	uInt* const add = &regs[OP_ADD_REG(op)];
 	uInt* const src = &regs[OP_SRC_REG(op)];
 	uInt pmem;
-
-#ifdef DEBUG
-	printf("I-op, op:%x, r%d, r%d, imm:%x\n", GET_OPCODE(op), OP_SRC_REG(op), OP_ADD_REG(op), GET_IMM(op));
-#endif
 
 	switch (GET_OPCODE(op)){
 		case OPCODE_BEQ:
@@ -206,7 +206,7 @@ void Cpu::executeImmOp(uInt op){
 
 
 void Cpu::executeJmpOp(uInt op){
-#ifdef DEBUG
+#if DEBUGLEVEL > 2
 	printf("J-op\n");
 #endif
 

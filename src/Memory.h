@@ -27,6 +27,11 @@ private:
 
 template <class T>
 T Memory::get(uInt addr){
+#if DEBUGLEVEL > 1
+	if (addr % sizeof(T) != 0)
+		fatalError("Misaligned access\n");
+#endif
+
 	const uInt page_addr = addr & PAGE_MASK;
 	const uInt page_bits = addr & PAGE_BITS;
 
@@ -39,6 +44,11 @@ T Memory::get(uInt addr){
 
 template <class T>
 T* Memory::getp(uInt addr){
+#if DEBUGLEVEL > 1
+	if (addr % sizeof(T) != 0)
+		fatalError("Misaligned access\n");
+#endif
+
 	const uInt page_addr = addr & PAGE_MASK;
 	const uInt page_bits = addr & PAGE_BITS;
 

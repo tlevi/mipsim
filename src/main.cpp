@@ -84,8 +84,8 @@ void cmd_pc(char const line[512], mips_t& mips){
 
 
 void cmd_mem(char const line[512], Memory& mem){
-	uInt val = 0;
-	uInt addr = 0;
+	uInt val = 0xdeadbeef;
+	uInt addr = 0xc001d00d;
 	const int result = sscanf(line, "m %8x = %8x", &addr, &val);
 
 	if (result == EOF || result < 1){
@@ -93,9 +93,11 @@ void cmd_mem(char const line[512], Memory& mem){
 		return;
 	}
 
-	addr &= 0xfffffff0;
+	// address must be aligned
+	if (addr & 0x3)
+		fatalError("Address for m command misaligned, ignoring\n");
 
-	if (result == 2) mem.set(addr, val);
+	if (result == 2) mem.set<uInt>(addr, val);
 	else printf("%.8X\n", mem.get<uInt>(addr));
 };
 

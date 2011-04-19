@@ -10,7 +10,7 @@ using namespace std;
 #include <malloc.h>
 #include <cstring>
 
-#ifdef DEBUG
+#if DEBUG && !DEBUGLEVEL
 #define DEBUGLEVEL 1
 #else
 #define DEBUGLEVEL 0
