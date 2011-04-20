@@ -1,0 +1,32 @@
+mipsim - A partial MIPS emulator
+
+mipsim reads commands from standard input and can run
+instructions like a MIPS processor.
+
+Commands can alter/display registers or memory values,
+or run some number of instructions.
+
+Supported commands and formats are:
+_____________________________________________________________________
+            |
+rN          | show in hex the contents of register N
+            |
+rN = <HEX>  | set the contents of register N to the given hexdecimal value
+            |
+m <HEX>     | show contents of the word (4 bytes) at the given hexdecimal address
+            |
+m <A> = <V> | set the word at address <A> to <V>, both in hex
+            |
+pc          | show contents of the Pc (program counter) register
+            |
+pc = <HEX>  | set the PC to the given hexdecimal value
+            |
+.           | execute one instruction
+            |
+. N         | execute N instructions
+            |
+---------------------------------------------------------------------
+
+Some whitespace variations are permitted, do not rely on this however.
+
+At mipsim start, all registers and memory is initialised to zero.
