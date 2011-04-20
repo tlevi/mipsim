@@ -25,6 +25,8 @@ pc = <HEX>  | set the PC to the given hexdecimal value
             |
 . N         | execute N instructions
             |
+q           | exit the program (also exits on end-of-file)
+            |
 ---------------------------------------------------------------------
 
 Some whitespace variations are permitted, do not rely on this however.
