@@ -10,16 +10,16 @@ class mips_t {
 public:
 	uInt r[32] ALIGNED(64); // general regs
 	union { // floating point regs
-		float f[32] ALIGNED(64);
-		double d[16] ALIGNED(64);
-	};
+		float f[32];
+		double d[16];
+	} ALIGNED(64);
 	union {
 		uInt regs[EXTRA_REGS];
 		struct {
 			uInt pc; // program counter
 			uInt psw; // processor status word
 		};
-	} ALIGNED(64);
+	};
 
 
 	void init(){
