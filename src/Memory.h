@@ -2,8 +2,12 @@
 #define MEMORY_H_
 
 #include "shared.h"
-#include <map>
 
+#ifndef PHYS_PAGE_TABLES
+#include <map>
+#else
+#include "pagetables.h"
+#endif
 
 class Memory{
 public:
@@ -17,9 +21,17 @@ public:
 	template <class T>
 	T* getp(uInt addr);
 
+	Memory();
 	~Memory();
+
 private:
+#ifndef PHYS_PAGE_TABLES
 	map<uInt,void*> pages;
+#else
+	pagedir_t pagedir ALIGNED(64);
+	void* const phys_page_walk(const uInt page_addr, void* const page);
+	void* const phys_page_walk(const uInt page_addr);
+#endif
 
 	void* create_page(uInt addr);
 };
@@ -35,9 +47,13 @@ T Memory::get(uInt addr){
 	const uInt page_addr = addr & PAGE_MASK;
 	const uInt page_bits = addr & PAGE_BITS;
 
+#ifndef PHYS_PAGE_TABLES
 	void* const page = pages[page_addr];
-	T* pval = static_cast<T*>(page) + page_bits;
+#else
+	void* const page = phys_page_walk(page_addr);
+#endif
 
+	T* pval = static_cast<T*>(page) + page_bits;
 	return (page != NULL) ? *pval : 0;
 };
 
@@ -52,10 +68,19 @@ T* Memory::getp(uInt addr){
 	const uInt page_addr = addr & PAGE_MASK;
 	const uInt page_bits = addr & PAGE_BITS;
 
+#ifndef PHYS_PAGE_TABLES
 	void* page = pages[page_addr];
 	if (page == NULL) page = create_page(page_addr);
-
 	return static_cast<T*>(page) + page_bits;
+
+#else
+	void* page = phys_page_walk(page_addr);
+	if (page == NULL){
+		page = create_page(page_addr);
+		phys_page_walk(page_addr, page);
+	}
+	return static_cast<T*>(page) + page_bits;
+#endif
 };
 
 
