@@ -103,9 +103,9 @@ void cmd_mem(char const line[512], Memory& mem){
 
 
 void cmd_exe(char const line[512], Cpu& cpu){
-	uLong count = 1;
+	uInt count = 1;
 
-	if (sscanf(line, ". %lu", &count) == EOF && sscanf(line, ".") == EOF){
+	if (sscanf(line, ". %u", &count) == EOF && sscanf(line, ".") == EOF){
 		COMMAND_SYNTAX();
 		return;
 	}
