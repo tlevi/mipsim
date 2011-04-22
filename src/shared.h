@@ -16,12 +16,15 @@ using namespace std;
 #define DEBUGLEVEL 0
 #endif
 
-#define FREE(ptr) { if ((ptr) != NULL){ free(((void*)ptr)); (ptr) = NULL; } }
+#define FREE(ptr) { if ((ptr) != NULL){ free((void*)(ptr)); (ptr) = NULL; } }
+#define DELETE(ptr) { if ((ptr) != NULL){ delete (ptr); (ptr) = NULL; } }
 #define UNUSED __attribute__ ((unused))
+#define NORETURN __attribute__ ((noreturn))
 #define ALIGNED(sz) __attribute__ ((__aligned__(sz)))
 #define PAGE_SIZE 4096
 #define PAGE_MASK (~(PAGE_SIZE-1))
 #define PAGE_BITS (PAGE_SIZE-1)
+#define PAGE_SHIFT 12
 
 typedef void* PPAGE ALIGNED(4096);
 typedef int32_t sInt;
@@ -32,9 +35,10 @@ typedef int64_t sLong;
 typedef uint64_t uLong;
 typedef int16_t sShort;
 typedef uint16_t uShort;
+typedef uintptr_t uIntptr;
 
 
-UNUSED static inline const void fatalError(string msg){
+UNUSED NORETURN static inline const void fatalError(string msg){
 	cerr << "Fatal error: " << msg;
 	exit(EXIT_FAILURE);
 };
@@ -50,7 +54,16 @@ template <class T>
 UNUSED static inline T arealloc(size_t sz, size_t align, T src, size_t cpsz){
 	T const ptr = static_cast<T>(memalign(align, sz));
 	if (ptr == NULL) fatalError("Failed to (re-)allocate memory!\n");
-	if (src != NULL) memcpy(ptr, src, ((cpsz <= sz) ? cpsz : sz));
+	if (src == NULL) memset(ptr, 0, sz);
+	else memcpy(ptr, src, ((cpsz <= sz) ? cpsz : sz));
+	return ptr;
+};
+
+
+UNUSED static inline void* aalloc(size_t sz, size_t align){
+	void* ptr = memalign(align, sz);
+	if (ptr == NULL) fatalError("Failed to allocate memory!\n");
+	memset(ptr, 0, sz);
 	return ptr;
 };
 
