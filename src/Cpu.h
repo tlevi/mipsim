@@ -7,7 +7,7 @@
 
 class Cpu{
 public:
-	void execute(const int count);
+	const void execute(const int count);
 
 	void init(mips_t& mips, Memory& mem) { this->mips = &mips; this->mem = &mem; };
 	mips_t* getMips() const { return this->mips; };
@@ -22,10 +22,10 @@ private:
 	mips_t* mips;
 	Memory* mem;
 
-	void executeOp(uInt op);
-	void executeRegOp(uInt op);
-	void executeImmOp(uInt op);
-	void executeJmpOp(uInt op);
+	const void executeOp(const uInt op);
+	const void executeRegOp(const uInt op);
+	const void executeImmOp(const uInt op);
+	const void executeJmpOp(const uInt op);
 };
 
 

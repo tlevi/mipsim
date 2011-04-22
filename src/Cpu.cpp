@@ -37,11 +37,11 @@ void Cpu::delete_cpu(Cpu * cpu){
 };
 
 
-void Cpu::execute(const int count){
+const void Cpu::execute(const int count){
 	for (int i=0; i < count; ++i){
 		if (mips->pc & 0x3) // checks pc % 4 == 0
 			fatalError("PC not aligned to 4!\n");
-		uInt op = mem->get<uInt>(mips->pc);
+		const uInt op = mem->get<uInt>(mips->pc);
 		executeOp(op);
 		mips->r[0] = 0;
 		mips->pc += 4;
@@ -49,7 +49,7 @@ void Cpu::execute(const int count){
 };
 
 
-void Cpu::executeOp(uInt op){
+const void Cpu::executeOp(const uInt op){
 	const uInt opcode = GET_OPCODE(op);
 
 	if (opcode == OPCODE_RFORMAT)
@@ -63,15 +63,14 @@ void Cpu::executeOp(uInt op){
 };
 
 
-void Cpu::executeRegOp(uInt op){
+const void Cpu::executeRegOp(const uInt op){
 #if DEBUGLEVEL > 2
 	printf("R-op, func:%x, r%d, r%d, r%d\n", ROP_FUNC(op), OP_DST_REG(op), OP_SRC_REG(op), OP_ADD_REG(op));
 #endif
 
-	uInt* const regs = mips->r;
-	uInt* const dst = &regs[OP_DST_REG(op)];
-	uInt* const add = &regs[OP_ADD_REG(op)];
-	uInt* const src = &regs[OP_SRC_REG(op)];
+	uInt* const dst = &mips->r[OP_DST_REG(op)];
+	const uInt* const add = &mips->r[OP_ADD_REG(op)];
+	const uInt* const src = &mips->r[OP_SRC_REG(op)];
 
 	switch (ROP_FUNC(op)){
 		case OPFUNC_SLL:
@@ -125,15 +124,14 @@ void Cpu::executeRegOp(uInt op){
 };
 
 
-void Cpu::executeImmOp(uInt op){
+const void Cpu::executeImmOp(const uInt op){
 #if DEBUGLEVEL > 2
 	printf("I-op, op:%x, r%d, r%d, imm:%x\n", GET_OPCODE(op), OP_SRC_REG(op), OP_ADD_REG(op), GET_IMM(op));
 #endif
 
-	uInt* const regs = mips->r;
-	uInt* const add = &regs[OP_ADD_REG(op)];
-	uInt* const src = &regs[OP_SRC_REG(op)];
-	uInt pmem;
+	uInt* const add = &mips->r[OP_ADD_REG(op)];
+	const uInt* const src = &mips->r[OP_SRC_REG(op)];
+	const uInt pmem = *src + GET_IMMSGN(op);
 
 	switch (GET_OPCODE(op)){
 		case OPCODE_BEQ:
@@ -169,33 +167,27 @@ void Cpu::executeImmOp(uInt op){
 			*add = GET_IMM(op);
 			break;
 		case OPCODE_LW:
-			pmem = *src + GET_IMMSGN(op);
 			*add = mem->get<uInt>(pmem);
 			break;
 		case OPCODE_LD:
 			fatalError("Unimplemented I-op\n");
 			break;
 		case OPCODE_LBU:
-			pmem = *src + GET_IMMSGN(op);
 			*add = mem->get<uChar>(pmem);
 			break;
 		case OPCODE_LHU:
-			pmem = *src + GET_IMMSGN(op);
 			*add = mem->get<uShort>(pmem);
 			break;
 		case OPCODE_SB:
-			pmem = *src + GET_IMMSGN(op);
 			mem->set(pmem, uChar(*add));
 			break;
 		case OPCODE_SH:
-			pmem = *src + GET_IMMSGN(op);
 			mem->set(pmem, uShort(*add));
 			break;
 		case OPCODE_LL:
 			fatalError("Unimplemented I-op\n");
 			break;
 		case OPCODE_SW:
-			pmem = *src + GET_IMMSGN(op);
 			mem->set(pmem, *add);
 			break;
 		default:
@@ -205,7 +197,7 @@ void Cpu::executeImmOp(uInt op){
 };
 
 
-void Cpu::executeJmpOp(uInt op){
+const void Cpu::executeJmpOp(const uInt op){
 #if DEBUGLEVEL > 2
 	printf("J-op\n");
 #endif
