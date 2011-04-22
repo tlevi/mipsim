@@ -2,17 +2,24 @@
 .SUFFIXES:
 .SUFFIXES: .d .cpp .o
 
-CFLAGS := -pipe -Wall -Ofast -s -march=native -fno-rtti --std=gnu++0x -flto
+CFLAGS += -pipe -Wall -Ofast -s -march=native -fno-rtti --std=gnu++0x -flto
 LFLAGS += $(CFLAGS) -Wl,--as-needed
 
 SRC := $(shell find src/ -iname *.cpp)
 OBJ := $(patsubst %.cpp, %.o, $(SRC))
 
 all: $(OBJ) mipsim
+profile: all
 debug: all
-debug: CFLAGS += -Werror -DDEBUG
-debug: CFLAGS :=$(CFLAGS:-s=-g3)
-debug: CFLAGS :=$(CFLAGS:-O%=-O1)
+
+debug: CFLAGS += -Werror -DDEBUG -DVALGRIND
+debug: CFLAGS := $(CFLAGS:-O%=-O1)
+debug: CFLAGS := $(CFLAGS:-s=-g3)
+debug: CFLAGS := $(CFLAGS:-flto=)
+
+profile: CFLAGS += -fno-inline-functions -finline-small-functions -DVALGRIND
+profile: CFLAGS := $(CFLAGS:-s=-g3)
+profile: CFLAGS := $(CFLAGS:-flto=)
 
 %.o: %.cpp Makefile
 	g++ $(CFLAGS) -c $*.cpp -o $*.o
