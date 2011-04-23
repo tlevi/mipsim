@@ -6,7 +6,7 @@
 #ifndef PHYS_PAGE_TABLES
 #include <map>
 #else
-#include "pagetables.h"
+#include "pagetables.hpp"
 #endif
 
 class Memory{

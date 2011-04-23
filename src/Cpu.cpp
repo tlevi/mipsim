@@ -17,14 +17,18 @@
 #define OP_SRC_REG(op) ((op >> 21) & 0x1f)
 
 
+Cpu::Cpu(mips_t* const amips, Memory* const amem) : mips(amips), mem(amem){
+
+};
+
+
 Cpu* Cpu::create_cpu(){
 	mips_t* mips = new mips_t();
 	mips->init();
 
 	Memory* mem = new Memory();
 
-	Cpu* cpu = new Cpu();
-	cpu->init(*mips, *mem);
+	Cpu* cpu = new Cpu(mips, mem);
 
 	return cpu;
 };
@@ -91,7 +95,6 @@ const void Cpu::executeRegOp(const uInt op){
 		case OPFUNC_DIV:
 		case OPFUNC_DIVU:
 			fatalError("Unimplemented R-op\n");
-			break;
 		case OPFUNC_ADD:
 			//TODO throw overflow exception
 		case OPFUNC_ADDU:
@@ -119,7 +122,6 @@ const void Cpu::executeRegOp(const uInt op){
 			break;
 		default:
 			fatalError("Unknown function for R-format instruction (opcode 0)\n");
-			break;
 	}
 };
 
@@ -147,10 +149,8 @@ const void Cpu::executeImmOp(const uInt op){
 			break;
 		case OPCODE_MFC:
 			fatalError("Unimplemented I-op\n");
-			break;
 		case OPCODE_FP:
 			fatalError("In executeImmOp, but found FP-op!\n");
-			break;
 		case OPCODE_SLTI:
 			*add = (sInt(*src) < GET_IMMSGN(op)) ? 1 : 0;
 			break;
@@ -171,7 +171,6 @@ const void Cpu::executeImmOp(const uInt op){
 			break;
 		case OPCODE_LD:
 			fatalError("Unimplemented I-op\n");
-			break;
 		case OPCODE_LBU:
 			*add = mem->get<uChar>(pmem);
 			break;
@@ -186,13 +185,11 @@ const void Cpu::executeImmOp(const uInt op){
 			break;
 		case OPCODE_LL:
 			fatalError("Unimplemented I-op\n");
-			break;
 		case OPCODE_SW:
 			mem->set(pmem, *add);
 			break;
 		default:
 			fatalError("Unknown function for I-format instruction\n");
-			break;
 	}
 };
 
@@ -206,10 +203,8 @@ const void Cpu::executeJmpOp(const uInt op){
 		case OPCODE_J:
 		case OPCODE_JAL:
 			fatalError("Unimplemented J-op\n");
-			break;
 		default:
 			fatalError("Unknown function for J-format instruction\n");
-			break;
 	}
 };
 
