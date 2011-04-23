@@ -9,6 +9,7 @@
 #define GET_IMM(op)	(op & 0xffff)
 #define GET_IMMSGNEXT(op) (uInt(sInt(sShort(op & 0xffff))))
 #define GET_IMMSGN(op) (sShort(op & 0xffff))
+#define GET_JADDR(op) ((op & 0x03ffffff) << 2)
 
 #define ROP_FUNC(op) (op & 0x3f)
 #define ROP_SHAM(op) ((op >> 6) & 0x1f)
@@ -46,9 +47,8 @@ const void Cpu::execute(const int count){
 		if (mips->pc & 0x3) // checks pc % 4 == 0
 			fatalError("PC not aligned to 4!\n");
 		const uInt op = mem->getu<uInt>(mips->pc);
-		executeOp(op);
-		mips->r[0] = 0;
 		mips->pc += 4;
+		executeOp(op);
 	}
 };
 
@@ -56,12 +56,16 @@ const void Cpu::execute(const int count){
 const void Cpu::executeOp(const uInt op){
 	const uInt opcode = GET_OPCODE(op);
 
-	if (opcode == OPCODE_RFORMAT)
+	if (opcode == OPCODE_RFORMAT){
 		executeRegOp(op);
+		mips->r[0] = 0;
+	}
+	else if (opcode >= OPCODE_IMIN && opcode <= OPCODE_IMAX){
+		executeImmOp(op);
+		mips->r[0] = 0;
+	}
 	else if (opcode >= OPCODE_JMIN && opcode <= OPCODE_JMAX)
 		executeJmpOp(op);
-	else if (opcode >= OPCODE_IMIN && opcode <= OPCODE_IMAX)
-		executeImmOp(op);
 	else
 		fatalError("Unknown opcode\n");
 };
@@ -87,7 +91,7 @@ const void Cpu::executeRegOp(const uInt op){
 			*dst = uInt(sInt(*add) >> ROP_SHAM(op));
 			break;
 		case OPFUNC_JR:
-			mips->pc = *src - 4;
+			mips->pc = *src;
 			break;
 		case OPFUNC_MFHI:
 		case OPFUNC_MFLO:
@@ -189,7 +193,7 @@ const void Cpu::executeImmOp(const uInt op){
 			mem->set(pmem, *add);
 			break;
 		default:
-			fatalError("Unknown function for I-format instruction\n");
+			fatalError("Unknown I-op instruction\n");
 	}
 };
 
@@ -200,11 +204,13 @@ const void Cpu::executeJmpOp(const uInt op){
 #endif
 
 	switch (GET_OPCODE(op)){
-		case OPCODE_J:
 		case OPCODE_JAL:
-			fatalError("Unimplemented J-op\n");
+			mips->r[31] = mips->pc;
+		case OPCODE_J:
+			mips->pc = (mips->pc & 0xf0000000) | GET_JADDR(op);
+			break;
 		default:
-			fatalError("Unknown function for J-format instruction\n");
+			fatalError("Unknown J-op instruction\n");
 	}
 };
 
