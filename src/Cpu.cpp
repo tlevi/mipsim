@@ -45,7 +45,7 @@ const void Cpu::execute(const int count){
 	for (int i=0; i < count; ++i){
 		if (mips->pc & 0x3) // checks pc % 4 == 0
 			fatalError("PC not aligned to 4!\n");
-		const uInt op = mem->get<uInt>(mips->pc);
+		const uInt op = mem->getu<uInt>(mips->pc);
 		executeOp(op);
 		mips->r[0] = 0;
 		mips->pc += 4;
