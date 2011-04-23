@@ -60,6 +60,8 @@ const void Cpu::executeOp(const uInt op){
 		executeRegOp(op);
 		mips->r[0] = 0;
 	}
+	else if (opcode == OPCODE_FP)
+		executeFpuOp(op);
 	else if (opcode >= OPCODE_IMIN && opcode <= OPCODE_IMAX){
 		executeImmOp(op);
 		mips->r[0] = 0;
@@ -214,3 +216,11 @@ const void Cpu::executeJmpOp(const uInt op){
 	}
 };
 
+
+const void executeFpuOp(const uInt op){
+#if DEBUGLEVEL > 2
+	printf("FP-op\n");
+#endif
+
+	fatalError("Unknown or unimplemented FP-op instruction\n");
+};

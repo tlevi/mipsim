@@ -25,6 +25,7 @@ private:
 	const void executeRegOp(const uInt op);
 	const void executeImmOp(const uInt op);
 	const void executeJmpOp(const uInt op);
+	const void executeFpuOp(const uInt op);
 };
 
 
