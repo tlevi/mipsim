@@ -1,5 +1,5 @@
-#ifndef PAGETABLES_H_
-#define PAGETABLES_H_
+#ifndef PAGETABLES_HPP_
+#define PAGETABLES_HPP_
 
 /**
  * Here we define a page table structure just like how x86 tables work, see:
@@ -80,4 +80,4 @@ private:
 };
 
 
-#endif /* PAGETABLES_H_ */
+#endif /* PAGETABLES_HPP_ */
