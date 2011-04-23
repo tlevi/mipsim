@@ -51,7 +51,7 @@ UNUSED static inline const void warn(string msg){
 
 
 template <class T>
-UNUSED static inline T arealloc(size_t sz, size_t align, T src, size_t cpsz){
+UNUSED static inline T arealloc(uIntptr sz, size_t align, T src, size_t cpsz){
 	T const ptr = static_cast<T>(memalign(align, sz));
 	if (ptr == NULL) fatalError("Failed to (re-)allocate memory!\n");
 	if (src == NULL) memset(ptr, 0, sz);
