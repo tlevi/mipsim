@@ -1,13 +1,13 @@
 #ifndef PAGETABLES_H_
 #define PAGETABLES_H_
 
-/*
+/**
  * Here we define a page table structure just like how x86 tables work, see:
  * http://en.wikipedia.org/wiki/File:X86_Paging_4K.svg
- * This lets us lookup pages in a decently fast way without using map or hashes etc
- */
+ * This lets us lookup pages in a decently fast way without using trees or hashes etc
+**/
 
-#include "shared.h"
+#include "MemoryStorage.hpp"
 
 
 #define PAGEDIR_TABLE_COUNT 0x400
@@ -66,6 +66,17 @@ public:
 		for (int i=0; i < PAGEDIR_TABLE_COUNT; ++i)
 			DELETE(entry[i])
 	};
+};
+
+
+class pagetables : public MemoryStorage{
+public:
+	void* const getsetpage(const uInt page_addr, void* const newpage);
+	void const setpage(const uInt page_addr, void* const newpage);
+	void* const getpage(const uInt page_addr) const;
+
+private:
+	pagedir_t pagedir ALIGNED(64);
 };
 
 
