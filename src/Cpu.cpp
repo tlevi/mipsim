@@ -217,7 +217,7 @@ const void Cpu::executeJmpOp(const uInt op){
 };
 
 
-const void executeFpuOp(const uInt op){
+const void Cpu::executeFpuOp(const uInt op){
 #if DEBUGLEVEL > 2
 	printf("FP-op\n");
 #endif
