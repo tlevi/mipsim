@@ -2,6 +2,8 @@
 #define FLATMEMORY_HPP_
 
 
+// 4MB alignment for 4GB mem
+#define FLAT_MEM_ALIGN (4*1024*1024)
 #define MEMSIZE (uIntptr(4096)*1024*1024)
 
 
@@ -11,7 +13,7 @@ private:
 
 
 public:
-	flatmemory() : memory(aalloc(MEMSIZE, 4096)) {
+	flatmemory() : memory(aalloc(MEMSIZE, FLAT_MEM_ALIGN)) {
 		if (memory == NULL)
 			fatalError("Failed to allocate memory\n");
 	};

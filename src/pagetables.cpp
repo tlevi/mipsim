@@ -20,7 +20,7 @@ void* const pagetables::getsetpage(const uInt page_addr, void* const newpage){
 	pagetable_t* ppt = pagedir.entry[tableid];
 
 	if (ppt == NULL){
-		void* const ptr = aalloc(sizeof(pagetable_t), 4096);
+		void* const ptr = aalloc(sizeof(pagetable_t), PAGE_SIZE);
 		ppt = pagedir.entry[tableid] = new (ptr) pagetable_t;
 	}
 
@@ -42,7 +42,7 @@ void const pagetables::setpage(const uInt page_addr, void* const newpage){
 	pagetable_t* ppt = pagedir.entry[tableid];
 
 	if (ppt == NULL){
-		void* const ptr = aalloc(sizeof(pagetable_t), 4096);
+		void* const ptr = aalloc(sizeof(pagetable_t), PAGE_SIZE);
 		ppt = pagedir.entry[tableid] = new (ptr) pagetable_t;
 	}
 

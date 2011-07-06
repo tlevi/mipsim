@@ -76,7 +76,7 @@ public:
 	void* const getpage(const uInt page_addr) const;
 
 private:
-	pagedir_t pagedir ALIGNED(4096);
+	pagedir_t pagedir PAGE_ALIGNED;
 };
 
 

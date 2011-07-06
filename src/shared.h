@@ -25,8 +25,9 @@ using namespace std;
 #define PAGE_MASK (~(PAGE_SIZE-1))
 #define PAGE_BITS (PAGE_SIZE-1)
 #define PAGE_SHIFT 12
+#define PAGE_ALIGNED ALIGNED(PAGE_SIZE)
 
-typedef void* PPAGE ALIGNED(4096);
+typedef void* PPAGE PAGE_ALIGNED;
 typedef int32_t sInt;
 typedef uint32_t uInt;
 typedef int8_t sChar;
